@@ -24,6 +24,12 @@ func main() {
 	categoryController := controller.NewCategoryController(catService)
 
 	app := fiber.New()
-	app.Get("/", categoryController.GetAll)
+	catRoute := app.Group("/api/v1/categories")
+	catRoute.Get("/", categoryController.GetAll)
+	catRoute.Post("/", categoryController.Create)
+	catRoute.Get("/:id", categoryController.GetById)
+	catRoute.Put("/:id", categoryController.Update)
+	catRoute.Delete("/:id", categoryController.Delete)
+
 	log.Fatal(app.Listen(":" + cfg.Port))
 }
