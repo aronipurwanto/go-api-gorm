@@ -2,8 +2,9 @@ package main
 
 import (
 	"github.com/aronipurwanto/go-api-gorm/config"
-	"github.com/aronipurwanto/go-api-gorm/controller"
+	"github.com/aronipurwanto/go-api-gorm/controllers"
 	"github.com/aronipurwanto/go-api-gorm/repositories"
+	"github.com/aronipurwanto/go-api-gorm/routes"
 	"github.com/aronipurwanto/go-api-gorm/services"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/driver/sqlserver"
@@ -18,18 +19,20 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	// initiate repo
+
+	// category
 	catRepo := repositories.NewCategoryRepo(db)
 	catService := services.NewCategoryService(catRepo)
-	categoryController := controller.NewCategoryController(catService)
+	catController := controllers.NewCategoryController(catService)
+
+	//product
+	prodRepo := repositories.NewProductRepository(db)
+	prodService := services.NewProductService(prodRepo)
+	prodController := controllers.NewProductController(prodService)
 
 	app := fiber.New()
-	catRoute := app.Group("/api/v1/categories")
-	catRoute.Get("/", categoryController.GetAll)
-	catRoute.Post("/", categoryController.Create)
-	catRoute.Get("/:id", categoryController.GetById)
-	catRoute.Put("/:id", categoryController.Update)
-	catRoute.Delete("/:id", categoryController.Delete)
+	// routes
+	routes.SetupRoutes(app, catController, prodController)
 
 	log.Fatal(app.Listen(":" + cfg.Port))
 }

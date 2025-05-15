@@ -8,8 +8,8 @@ import (
 type CategoryRepo interface {
 	GetAll() ([]models.Category, error)
 	GetByID(id int) (models.Category, error)
-	Create(category models.Category) (models.Category, error)
-	Update(category models.Category) (models.Category, error)
+	Create(category *models.Category) (models.Category, error)
+	Update(category *models.Category) (models.Category, error)
 	Delete(id int) error
 }
 
@@ -32,29 +32,28 @@ func (c *categoryRepoImpl) GetAll() ([]models.Category, error) {
 	return categories, nil
 }
 
-func (c *categoryRepoImpl) GetByID(id int) (models.Category, error) {
-	var category models.Category
-	err := c.db.First(&category, id).Error
+func (c *categoryRepoImpl) GetByID(id int) (category models.Category, err error) {
+	err = c.db.First(&category, id).Error
 	if err != nil {
 		return category, err
 	}
 	return category, nil
 }
 
-func (c *categoryRepoImpl) Create(category models.Category) (models.Category, error) {
-	err := c.db.Create(&category).Error
+func (c *categoryRepoImpl) Create(category *models.Category) (models.Category, error) {
+	err := c.db.Create(category).Error
 	if err != nil {
-		return category, err
+		return models.Category{}, err
 	}
-	return category, nil
+	return *category, nil
 }
 
-func (c *categoryRepoImpl) Update(category models.Category) (models.Category, error) {
-	err := c.db.Save(&category).Error
+func (c *categoryRepoImpl) Update(category *models.Category) (models.Category, error) {
+	err := c.db.Save(category).Error
 	if err != nil {
-		return category, err
+		return models.Category{}, err
 	}
-	return category, nil
+	return *category, nil
 }
 
 func (c *categoryRepoImpl) Delete(id int) error {

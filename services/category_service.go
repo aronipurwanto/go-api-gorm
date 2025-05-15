@@ -8,8 +8,8 @@ import (
 type CategoryService interface {
 	GetAll() ([]models.Category, error)
 	GetByID(id int) (models.Category, error)
-	Create(category models.Category) (models.Category, error)
-	Update(category models.Category) (models.Category, error)
+	Create(category *models.Category) (models.Category, error)
+	Update(category *models.Category) (models.Category, error)
 	Delete(id int) error
 }
 
@@ -23,22 +23,22 @@ func NewCategoryService(repo repositories.CategoryRepo) CategoryService {
 	}
 }
 
-func (c categoryServiceImpl) GetAll() ([]models.Category, error) {
+func (c *categoryServiceImpl) GetAll() ([]models.Category, error) {
 	return c.repo.GetAll()
 }
 
-func (c categoryServiceImpl) GetByID(id int) (models.Category, error) {
+func (c *categoryServiceImpl) GetByID(id int) (models.Category, error) {
 	return c.repo.GetByID(id)
 }
 
-func (c categoryServiceImpl) Create(category models.Category) (models.Category, error) {
+func (c *categoryServiceImpl) Create(category *models.Category) (models.Category, error) {
 	return c.repo.Create(category)
 }
 
-func (c categoryServiceImpl) Update(category models.Category) (models.Category, error) {
+func (c *categoryServiceImpl) Update(category *models.Category) (models.Category, error) {
 	return c.repo.Update(category)
 }
 
-func (c categoryServiceImpl) Delete(id int) error {
+func (c *categoryServiceImpl) Delete(id int) error {
 	return c.repo.Delete(id)
 }
