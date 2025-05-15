@@ -20,6 +20,18 @@ func NewEmployeeController(service services.EmployeeService) *EmployeeController
 	}
 }
 
+// GetAllEmployees godoc
+// @Summary Get all employees
+// @Description Retrieve a paginated list of employees
+// @Tags Employees
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number"
+// @Param limit query int false "Page size"
+// @Success 200 {object} utils.StandardListResponse
+// @Failure 500 {object} utils.StandardErrorResponse
+// @Router /employees [get]
+// @Security BearerAuth
 func (c *EmployeeController) GetAll(ctx *fiber.Ctx) error {
 	page, limit := utils.GetPagination(ctx)
 
@@ -37,6 +49,16 @@ func (c *EmployeeController) GetAll(ctx *fiber.Ctx) error {
 	return utils.ListResponse(ctx, 200, "List retrieved successfully", data, meta)
 }
 
+// GetEmployeeByID godoc
+// @Summary Get employee by ID
+// @Description Retrieve a single employee by its ID
+// @Tags Employees
+// @Produce json
+// @Param id path int true "Employee ID"
+// @Success 200 {object} models.Employee
+// @Failure 400,404 {object} utils.StandardErrorResponse
+// @Router /employees/{id} [get]
+// @Security BearerAuth
 func (c *EmployeeController) GetByID(ctx *fiber.Ctx) error {
 	id, err := utils.ParseID(ctx)
 	if err != nil {
@@ -50,6 +72,17 @@ func (c *EmployeeController) GetByID(ctx *fiber.Ctx) error {
 	return utils.SuccessResponse(ctx, 200, "Data retrieved successfully", emp)
 }
 
+// CreateEmployee godoc
+// @Summary Create a new employee
+// @Description Add a new employee to the system
+// @Tags Employees
+// @Accept json
+// @Produce json
+// @Param employee body models.Employee true "Employee object"
+// @Success 201 {object} models.Employee
+// @Failure 400,500 {object} utils.StandardErrorResponse
+// @Router /employees [post]
+// @Security BearerAuth
 func (c *EmployeeController) Create(ctx *fiber.Ctx) error {
 	emp, validationErrs, err := utils.BindAndValidate[models.Employee](ctx, c.validate)
 	if err != nil {
@@ -67,6 +100,18 @@ func (c *EmployeeController) Create(ctx *fiber.Ctx) error {
 	return utils.SuccessResponse(ctx, 201, "Employee created successfully", emp)
 }
 
+// UpdateEmployee godoc
+// @Summary Update an employee
+// @Description Update employee information by ID
+// @Tags Employees
+// @Accept json
+// @Produce json
+// @Param id path int true "Employee ID"
+// @Param employee body models.Employee true "Updated employee object"
+// @Success 200 {object} models.Employee
+// @Failure 400,404,500 {object} utils.StandardErrorResponse
+// @Router /employees/{id} [put]
+// @Security BearerAuth
 func (c *EmployeeController) Update(ctx *fiber.Ctx) error {
 	id, err := utils.ParseID(ctx)
 	if err != nil {
@@ -95,6 +140,16 @@ func (c *EmployeeController) Update(ctx *fiber.Ctx) error {
 	return utils.SuccessResponse(ctx, 200, "Employee updated successfully", input)
 }
 
+// DeleteEmployee godoc
+// @Summary Delete an employee
+// @Description Remove employee record by ID
+// @Tags Employees
+// @Produce json
+// @Param id path int true "Employee ID"
+// @Success 200 {object} fiber.Map
+// @Failure 400,500 {object} utils.StandardErrorResponse
+// @Router /employees/{id} [delete]
+// @Security BearerAuth
 func (c *EmployeeController) Delete(ctx *fiber.Ctx) error {
 	id, err := utils.ParseID(ctx)
 	if err != nil {

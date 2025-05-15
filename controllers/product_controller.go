@@ -20,6 +20,18 @@ func NewProductController(service services.ProductService) *ProductController {
 	}
 }
 
+// GetAllProducts godoc
+// @Summary Get all products
+// @Description Retrieve a paginated list of products
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number"
+// @Param limit query int false "Page size"
+// @Success 200 {object} utils.StandardListResponse
+// @Failure 500 {object} utils.StandardErrorResponse
+// @Router /products [get]
+// @Security BearerAuth
 func (c *ProductController) GetAll(ctx *fiber.Ctx) error {
 	page, limit := utils.GetPagination(ctx)
 	//page := ctx.Locals("page").(int)
@@ -39,6 +51,17 @@ func (c *ProductController) GetAll(ctx *fiber.Ctx) error {
 	return utils.ListResponse(ctx, 200, "Products retrieved", products, meta)
 }
 
+// SearchProducts godoc
+// @Summary Search products by name
+// @Tags Products
+// @Produce json
+// @Param name query string true "Search keyword"
+// @Param page query int false "Page"
+// @Param limit query int false "Limit"
+// @Success 200 {object} utils.StandardListResponse
+// @Failure 400,500 {object} utils.StandardErrorResponse
+// @Router /products/search [get]
+// @Security BearerAuth
 func (c *ProductController) Search(ctx *fiber.Ctx) error {
 	name := ctx.Query("name", "")
 	if name == "" {
@@ -63,6 +86,16 @@ func (c *ProductController) Search(ctx *fiber.Ctx) error {
 	return utils.ListResponse(ctx, 200, "Search results", products, meta)
 }
 
+// GetProductByID godoc
+// @Summary Get a product by ID
+// @Description Retrieve a single product by its ID
+// @Tags Products
+// @Produce json
+// @Param id path int true "Product ID"
+// @Success 200 {object} models.Product
+// @Failure 400,404 {object} utils.StandardErrorResponse
+// @Router /products/{id} [get]
+// @Security BearerAuth
 func (c *ProductController) GetByID(ctx *fiber.Ctx) error {
 	id, err := utils.ParseID(ctx)
 	if err != nil {
@@ -76,6 +109,17 @@ func (c *ProductController) GetByID(ctx *fiber.Ctx) error {
 	return utils.SuccessResponse(ctx, 200, "Product retrieved", data)
 }
 
+// CreateProduct godoc
+// @Summary Create a new product
+// @Description Add a new product to the database
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param product body models.Product true "Product object"
+// @Success 201 {object} models.Product
+// @Failure 400,500 {object} utils.StandardErrorResponse
+// @Router /products [post]
+// @Security BearerAuth
 func (c *ProductController) Create(ctx *fiber.Ctx) error {
 	prod, validationErrs, err := utils.BindAndValidate[models.Product](ctx, c.validate)
 	if err != nil {
@@ -93,6 +137,18 @@ func (c *ProductController) Create(ctx *fiber.Ctx) error {
 	return utils.SuccessResponse(ctx, 201, "Product created", created)
 }
 
+// UpdateProduct godoc
+// @Summary Update a product
+// @Description Update product data by ID
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param id path int true "Product ID"
+// @Param product body models.Product true "Updated product object"
+// @Success 200 {object} models.Product
+// @Failure 400,404,500 {object} utils.StandardErrorResponse
+// @Router /products/{id} [put]
+// @Security BearerAuth
 func (c *ProductController) Update(ctx *fiber.Ctx) error {
 	id, err := utils.ParseID(ctx)
 	if err != nil {
@@ -120,6 +176,16 @@ func (c *ProductController) Update(ctx *fiber.Ctx) error {
 	return utils.SuccessResponse(ctx, 200, "Product updated", updated)
 }
 
+// DeleteProduct godoc
+// @Summary Delete a product
+// @Description Remove product by ID
+// @Tags Products
+// @Produce json
+// @Param id path int true "Product ID"
+// @Success 200 {object} fiber.Map
+// @Failure 400,500 {object} utils.StandardErrorResponse
+// @Router /products/{id} [delete]
+// @Security BearerAuth
 func (c *ProductController) Delete(ctx *fiber.Ctx) error {
 	id := ctx.Locals("id").(int)
 

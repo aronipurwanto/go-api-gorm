@@ -20,6 +20,18 @@ func NewCategoryController(service services.CategoryService) *CategoryController
 	}
 }
 
+// GetAllCategories godoc
+// @Summary Get all categories
+// @Description Retrieve a paginated list of product categories
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number"
+// @Param limit query int false "Page size"
+// @Success 200 {object} utils.StandardListResponse
+// @Failure 500 {object} utils.StandardErrorResponse
+// @Router /categories [get]
+// @Security BearerAuth
 func (c *CategoryController) GetAll(ctx *fiber.Ctx) error {
 	data, err := c.service.GetAll()
 	if err != nil {
@@ -28,6 +40,16 @@ func (c *CategoryController) GetAll(ctx *fiber.Ctx) error {
 	return utils.ListResponse(ctx, 200, "Categories fetched successfully", data, utils.Meta{})
 }
 
+// GetCategoryByID godoc
+// @Summary Get category by ID
+// @Description Retrieve a single category by its ID
+// @Tags Categories
+// @Produce json
+// @Param id path int true "Category ID"
+// @Success 200 {object} models.Category
+// @Failure 400,404 {object} utils.StandardErrorResponse
+// @Router /categories/{id} [get]
+// @Security BearerAuth
 func (c *CategoryController) GetByID(ctx *fiber.Ctx) error {
 	id, err := utils.ParseID(ctx)
 	if err != nil {
@@ -41,6 +63,17 @@ func (c *CategoryController) GetByID(ctx *fiber.Ctx) error {
 	return utils.SuccessResponse(ctx, 200, "Category fetched", data)
 }
 
+// CreateCategory godoc
+// @Summary Create a new category
+// @Description Add a new category to the database
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Param category body models.Category true "Category object"
+// @Success 201 {object} models.Category
+// @Failure 400,500 {object} utils.StandardErrorResponse
+// @Router /categories [post]
+// @Security BearerAuth
 func (c *CategoryController) Create(ctx *fiber.Ctx) error {
 	cat, validationErrs, err := utils.BindAndValidate[models.Category](ctx, c.validate)
 	if err != nil {
@@ -59,6 +92,18 @@ func (c *CategoryController) Create(ctx *fiber.Ctx) error {
 	return utils.SuccessResponse(ctx, 201, "Category created", create)
 }
 
+// UpdateCategory godoc
+// @Summary Update a category
+// @Description Update category data by ID
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Param id path int true "Category ID"
+// @Param category body models.Category true "Updated category object"
+// @Success 200 {object} models.Category
+// @Failure 400,404,500 {object} utils.StandardErrorResponse
+// @Router /categories/{id} [put]
+// @Security BearerAuth
 func (c *CategoryController) Update(ctx *fiber.Ctx) error {
 	id, err := utils.ParseID(ctx)
 	if err != nil {
@@ -89,6 +134,16 @@ func (c *CategoryController) Update(ctx *fiber.Ctx) error {
 	return utils.SuccessResponse(ctx, 200, "Category updated", update)
 }
 
+// DeleteCategory godoc
+// @Summary Delete a category
+// @Description Delete a category by ID
+// @Tags Categories
+// @Produce json
+// @Param id path int true "Category ID"
+// @Success 200 {object} fiber.Map
+// @Failure 400,500 {object} utils.StandardErrorResponse
+// @Router /categories/{id} [delete]
+// @Security BearerAuth
 func (c *CategoryController) Delete(ctx *fiber.Ctx) error {
 	id, err := utils.ParseID(ctx)
 	if err != nil {
