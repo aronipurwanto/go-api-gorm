@@ -20,11 +20,6 @@ func NewOrderController(service services.OrderService) *OrderController {
 	}
 }
 
-type OrderInput struct {
-	models.Order
-	OrderDetails []models.OrderDetail `json:"order_details" validate:"required,min=1,dive"`
-}
-
 // CreateOrder godoc
 // @Summary Create new order
 // @Description Create order and order details in one transaction
@@ -37,7 +32,7 @@ type OrderInput struct {
 // @Router /orders [post]
 // @Security BearerAuth
 func (c *OrderController) Create(ctx *fiber.Ctx) error {
-	var input OrderInput
+	var input models.OrderInput
 	if err := ctx.BodyParser(&input); err != nil {
 		return utils.ErrorResponse(ctx, 400, "Invalid input", []utils.ErrorDetail{{Message: err.Error()}})
 	}
@@ -142,7 +137,7 @@ func (c *OrderController) Update(ctx *fiber.Ctx) error {
 		return utils.ErrorResponse(ctx, 400, "Invalid ID", []utils.ErrorDetail{{Message: err.Error()}})
 	}
 
-	var input OrderInput
+	var input models.OrderInput
 	if err := ctx.BodyParser(&input); err != nil {
 		return utils.ErrorResponse(ctx, 400, "Invalid input", []utils.ErrorDetail{{Message: err.Error()}})
 	}

@@ -16,7 +16,7 @@ func SetupRoutes(app *fiber.App,
 
 	apiV1 := app.Group("/api/v1")
 
-	catRoute := apiV1.Group("/categories")
+	catRoute := apiV1.Group("/categories", middlewares.Protected(cfg.JWTSecret))
 	catRoute.Get("/", catCtrl.GetAll)
 	catRoute.Post("/", catCtrl.Create)
 	catRoute.Get("/:id", catCtrl.GetByID)

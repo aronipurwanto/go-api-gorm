@@ -26,3 +26,8 @@ type OrderDetail struct {
 	Quantity  int     `gorm:"column:Quantity" json:"quantity"`
 	Discount  float64 `gorm:"column:Discount" json:"discount"`
 }
+
+type OrderInput struct {
+	Order
+	OrderDetails []OrderDetail `json:"order_details" validate:"required,min=1,dive"`
+}
