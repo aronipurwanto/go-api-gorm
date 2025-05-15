@@ -30,9 +30,19 @@ func main() {
 	prodService := services.NewProductService(prodRepo)
 	prodController := controllers.NewProductController(prodService)
 
+	// employee
+	empRepo := repositories.NewEmployeeRepository(db)
+	empService := services.NewEmployeeService(empRepo)
+	empController := controllers.NewEmployeeController(empService)
+
+	// order
+	orderRepo := repositories.NewOrderRepository(db)
+	orderService := services.NewOrderService(orderRepo)
+	orderController := controllers.NewOrderController(orderService)
+
 	app := fiber.New()
 	// routes
-	routes.SetupRoutes(app, catController, prodController)
+	routes.SetupRoutes(app, cfg, catController, prodController, empController, orderController)
 
 	log.Fatal(app.Listen(":" + cfg.Port))
 }

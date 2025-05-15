@@ -21,9 +21,9 @@ func NewProductController(service services.ProductService) *ProductController {
 }
 
 func (c *ProductController) GetAll(ctx *fiber.Ctx) error {
-	//page, limit := utils.GetPagination(ctx)
-	page := ctx.Locals("page").(int)
-	limit := ctx.Locals("limit").(int)
+	page, limit := utils.GetPagination(ctx)
+	//page := ctx.Locals("page").(int)
+	//limit := ctx.Locals("limit").(int)
 
 	products, total, err := c.service.GetAllPaginated(page, limit)
 	if err != nil {
