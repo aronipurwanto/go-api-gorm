@@ -39,6 +39,30 @@ func (c *ProductController) GetAll(ctx *fiber.Ctx) error {
 	return utils.ListResponse(ctx, 200, "Products retrieved", products, meta)
 }
 
+func (c *ProductController) Search(ctx *fiber.Ctx) error {
+	name := ctx.Query("name", "")
+	if name == "" {
+		return utils.ErrorResponse(ctx, 400, "Missing query parameter: name", nil)
+	}
+
+	//page := ctx.QueryInt("page", 1)
+	//limit := ctx.QueryInt("limit", 10)
+	page, limit := utils.GetPagination(ctx)
+
+	products, total, err := c.service.SearchByName(name, page, limit)
+	if err != nil {
+		return utils.ErrorResponse(ctx, 500, "Search failed", []utils.ErrorDetail{{Message: err.Error()}})
+	}
+
+	meta := utils.Meta{
+		Page:  page,
+		Limit: limit,
+		Total: int(total),
+	}
+
+	return utils.ListResponse(ctx, 200, "Search results", products, meta)
+}
+
 func (c *ProductController) GetByID(ctx *fiber.Ctx) error {
 	id, err := utils.ParseID(ctx)
 	if err != nil {

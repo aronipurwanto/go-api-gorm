@@ -25,6 +25,7 @@ func SetupRoutes(app *fiber.App,
 
 	prodRoute := apiV1.Group("/products")
 	prodRoute.Get("/", prodCtrl.GetAll)
+	prodRoute.Get("/search", prodCtrl.Search)
 	prodRoute.Post("/", prodCtrl.Create)
 	prodRoute.Get("/:id", prodCtrl.GetByID)
 	prodRoute.Put("/:id", prodCtrl.Update)

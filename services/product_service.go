@@ -8,6 +8,7 @@ import (
 type ProductService interface {
 	GetAll() ([]models.Product, error)
 	GetAllPaginated(page, limit int) ([]models.Product, int64, error)
+	SearchByName(name string, page, limit int) ([]models.Product, int64, error)
 	GetByID(id int) (*models.Product, error)
 	Create(prod *models.Product) (models.Product, error)
 	Update(prod *models.Product) (models.Product, error)
@@ -28,6 +29,10 @@ func (s *productServiceImpl) GetAll() ([]models.Product, error) {
 
 func (s *productServiceImpl) GetAllPaginated(page, limit int) ([]models.Product, int64, error) {
 	return s.repo.GetPaginated(page, limit)
+}
+
+func (s *productServiceImpl) SearchByName(name string, page, limit int) ([]models.Product, int64, error) {
+	return s.repo.SearchByName(name, page, limit)
 }
 
 func (s *productServiceImpl) GetByID(id int) (*models.Product, error) {
